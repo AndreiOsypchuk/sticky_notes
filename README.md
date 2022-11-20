@@ -1,9 +1,8 @@
-#Sticky notes app 📝
-🌹🌻🐱‍🏍
+# Sticky notes app 📝
 
 ---
 
-###Front End 🤳
+### Front End 🤳
 
 - ReactJS
 - TailwindCSS
@@ -12,7 +11,7 @@
 - LocalStorage
 - ReactContext & ReactReducer
 
-###Back End 🔋
+### Back End 🔋
 
 - NodeJS
 - Express
@@ -21,5 +20,5 @@
 
 ---
 
-##Main Functionality
+## Main Functionality
 Allows users to create, update and delete notes.
