@@ -1,6 +1,6 @@
 import React from "react";
 import { ReactComponent as Logo } from "../../Logo.svg";
-import { Requester } from "../../utils/api";
+import { Requester, AlphabetAPI } from "../../utils/api";
 import { RootContext } from "../../store/context";
 import { Actions } from "../../store/actions";
 import { useNavigate } from "react-router-dom";
@@ -30,7 +30,7 @@ export const Auth = () => {
   const onSubmit = async (data) => {
     if (pageType === AuthPageTypes.REGISTER) {
       try {
-        const response = await Requester.post("/auth/register", data);
+        const response = await Requester.post(AlphabetAPI.REGISTER_URL, data);
         console.log(response.data);
         dispatch({ type: Actions.LOG_IN });
         navigate("/");
@@ -39,7 +39,7 @@ export const Auth = () => {
       }
     } else if (pageType === AuthPageTypes.LOGIN) {
       try {
-        const response = await Requester.post("/auth/login", data);
+        const response = await Requester.post(AlphabetAPI.LOGIN_URL, data);
         console.log(response.data);
         dispatch({ type: Actions.LOG_IN });
         navigate("/");
@@ -77,14 +77,14 @@ const RegisterForm = ({ switchPageType, onSubmit }) => {
         <div className="flex flex-col justify-center items-center max-w-sm ">
           <div className="flex flex-col justify-center items-center mb-12">
             <Logo className="w-16 h-16" />
-            <h1 className="mt-3 text-2xl text-slate-500">Sticky Notes</h1>
+            <h1 className="mt-3 text-2xl text-slate-500">Sticky_Notes</h1>
           </div>
 
           <form
             onSubmit={handleSubmit}
             className="flex flex-col justify-center items-center gap-3"
           >
-            <div className="flex items-center w-full gap-11">
+            <div className="flex items-center w-full gap-9">
               <Input
                 label="First Name"
                 value={input.firstName}
@@ -118,7 +118,7 @@ const RegisterForm = ({ switchPageType, onSubmit }) => {
             />
             <button
               type="submit"
-              className="bg-slate-500 w-full h-12 p-4 text-white rounded-md flex items-center justify-center"
+              className="bg-slate-500 w-full h-12 p-4 text-white rounded-md flex items-center justify-center mt-4"
             >
               Submit
             </button>
@@ -147,7 +147,6 @@ const LogInForm = ({ switchPageType, onSubmit }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     await onSubmit(input);
   };
   return (
@@ -196,11 +195,20 @@ const LogInForm = ({ switchPageType, onSubmit }) => {
 
 const Input = (props) => {
   return (
-    <div className="mb-4 flex flex-col w-full">
-      <label htmlFor={props.label}>{props.label}</label>
+    <div className="mb-1 flex flex-col w-full">
+      <label className="font-bold text-sm text-slate-700" htmlFor={props.label}>
+        {props.label}
+      </label>
       <input
+        autoComplete={
+          props.name === "password" || props.name === "confirm" ? "off" : "on"
+        }
+        type={props.name === "confirm" ? "password" : props.name}
         {...props}
-        className="h-12 rounded-md p-4 w-full border-slate-400 border-2"
+        className={
+          "h-12 rounded-md p-4 w-full border-slate-400 border-2 " +
+          props.className
+        }
       />
     </div>
   );
