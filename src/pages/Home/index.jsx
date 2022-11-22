@@ -1,6 +1,6 @@
 import React from "react";
 import { Navbar } from "../../components";
-import { BiSearch } from "react-icons/bi";
+import { BiSearch, BiDotsHorizontalRounded } from "react-icons/bi";
 import { RootContext } from "../../store/context";
 import { Actions } from "../../store/actions";
 import { v4 as uuid } from "uuid";
@@ -8,7 +8,7 @@ import { v4 as uuid } from "uuid";
 // color, content, isInWorkspace
 
 export const Home = () => {
-  const { dispatch, state } = React.useContext(RootContext);
+  const { dispatch } = React.useContext(RootContext);
 
   const handleAdd = () => {
     dispatch({
@@ -19,19 +19,16 @@ export const Home = () => {
 
   return (
     <>
-      <div className="bg-red-700 h-screen overflow-hidden">
+      <div className=" h-screen overflow-hidden">
         <Navbar />
-        <div className="bg-blue-400 h-[93.757%] w-full flex">
-          <div className="bg-green-400 bg-white flex flex-col h-full max-w-xs px-4 relative overflow-y-auto">
-            <div className=" sticky top-0 bg-white">
+        <div className=" h-[93.757%] w-full flex">
+          <div className=" bg-slate-100 flex flex-col h-full min-w-max max-w-xs px-4 relative overflow-y-auto">
+            <div className=" sticky top-0 bg-slate-100">
               <h1 className="font-black text-slate-800 text-2xl py-4">
                 All Your Notes
               </h1>
               <button onClick={handleAdd}>Add note</button>
-              <div
-                style={{ bottom: `0px`, left: `0px` }}
-                className="relative flex items-center shadow-lg rounded-full "
-              >
+              <div className="relative flex items-center shadow-lg rounded-full ">
                 <input
                   placeholder="Search for notes"
                   className="rounded-md p-1 px-3 w-full pr-8 border border-slate-400 backdrop-blur-sm bg-white/30"
@@ -44,7 +41,7 @@ export const Home = () => {
           </div>
 
           <DroppableArea
-            className="bg-yellow-300 h-full flex w-4/5"
+            className=" h-full flex w-4/5 gap-4 p-4"
             actionWhenDropped={Actions.PIN_NOTE}
           >
             <Wrokspace />
@@ -104,16 +101,17 @@ const NoteInWorkspace = ({ data }) => {
     dispatch({ type: Actions.EDIT_NOTE, data: input, id: data.id });
   };
   return (
-    <div draggable onDragStart={handleDragStart}>
-      {/* <div>choose color</div> */}
+    <div draggable onDragStart={handleDragStart} className="h-min">
+      <div className="bg-red-400 p-4"></div>
       <textarea
-        rows="4"
-        cols="35"
+        rows="6"
+        cols="30"
         type="text"
         placeholder="New Note..."
         value={input}
         onChange={handleChange}
         onBlur={handleContentSave}
+        className="bg-yellow-200 p-4 placeholder:text-sm placeholder:font-thin"
       />
     </div>
   );
@@ -126,7 +124,7 @@ const YourNotesList = () => {
   return (
     <DroppableArea
       actionWhenDropped={Actions.UNPIN_NOTE}
-      className=" pt-4 pl-4 bg-red-600"
+      className="p-4 h-full pb-12"
     >
       {notes.map((item) => (
         <YourNote key={item.id} data={item} />
@@ -146,9 +144,19 @@ const YourNote = ({ data }) => {
       <div
         draggable
         onDragStart={handleDragStart}
-        className="h-12 bg-slate-400 text-ellipsis overflow-hidden w-48 mb-1"
+        className="h-20 bg-yellow-200 w-52  mb-2  rounded-md"
       >
-        {data.content.length ? data.content : "New Note"}
+        <div className="bg-red-400 p-1 rounded-t-md"> </div>
+        <div className="w-52 h-12 p-2 relative rounded-md">
+          <BiDotsHorizontalRounded className="absolute right-1 top-0" />
+          {data.content.length ? (
+            <p className=" text-xs text-slate-900 pt-1 h-12 truncate overflow-hidden">
+              {data.content}
+            </p>
+          ) : (
+            <p className="text-xs text-slate-500 pt-1 font-thin">New Note...</p>
+          )}
+        </div>
       </div>
     )
   );
