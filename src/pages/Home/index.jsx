@@ -3,7 +3,7 @@ import { Navbar } from "../../components";
 import { BiSearch } from "react-icons/bi";
 import { RootContext } from "../../store/context";
 import { Actions } from "../../store/actions";
-
+import { v4 as uuid } from "uuid";
 // how does data inside the note look like
 // color, content, isInWorkspace
 
@@ -13,12 +13,8 @@ export const Home = () => {
   const handleAdd = () => {
     dispatch({
       type: Actions.CREATE_NOTE,
-      data: { content: "", color: "default", isInWorkspace: false },
+      data: { id: uuid(), content: "", color: "default", isInWorkspace: false },
     });
-  };
-
-  const handleDragStart = (e) => {
-    e.dataTransfer.setData("data", JSON.stringify({ name: "asdf" }));
   };
 
   return (
@@ -43,57 +39,117 @@ export const Home = () => {
                 <BiSearch className="absolute -translate-x-1/2 right-0  text-slate-500/50" />
               </div>
             </div>
-            <ul className=" pt-4 pl-4">
-              {state.notes.map((item, index) => (
-                <li
-                  draggable
-                  onDragStart={handleDragStart}
-                  key={index}
-                  className="h-24 bg-slate-400"
-                >
-                  New Note
-                </li>
-              ))}
-            </ul>
+
+            <YourNotesList />
           </div>
 
-          <Wrokspace />
+          <DroppableArea
+            className="bg-yellow-300 h-full flex w-4/5"
+            actionWhenDropped={Actions.PIN_NOTE}
+          >
+            <Wrokspace />
+          </DroppableArea>
         </div>
       </div>
     </>
   );
 };
 
-// make note look something okay
-const Note = () => {
-  return (
-    <div>
-      <h1>note</h1>
-    </div>
-  );
-};
-
-// display as a grid or whatever
-const Wrokspace = () => {
-  const { state, dispatch } = React.useContext(RootContext);
+const DroppableArea = ({ actionWhenDropped, children, ...props }) => {
+  const { dispatch } = React.useContext(RootContext);
   const handleDrop = (e) => {
+    const noteId = e.dataTransfer.getData("data");
+    console.log(noteId);
     e.preventDefault();
-    console.log(JSON.parse(e.dataTransfer.getData("data")));
+    dispatch({
+      type: actionWhenDropped,
+      id: noteId,
+    });
   };
   return (
-    <div
-      onDrop={handleDrop}
-      onDragOver={(e) => e.preventDefault()}
-      className="bg-yellow-300 h-full flex w-4/5"
-    >
-      {state.notes.map((item, index) => {
-        return item.isInWorkspace && item.content;
-      })}
+    <div {...props} onDrop={handleDrop} onDragOver={(e) => e.preventDefault()}>
+      {children}
     </div>
   );
 };
 
-// notes on the left
+const Wrokspace = () => {
+  const {
+    state: { notes },
+  } = React.useContext(RootContext);
+  return (
+    <>
+      {notes.map((item) => {
+        return (
+          item.isInWorkspace && <NoteInWorkspace key={item.id} data={item} />
+        );
+      })}
+    </>
+  );
+};
+
+// add color picker
+
+const NoteInWorkspace = ({ data }) => {
+  const { dispatch } = React.useContext(RootContext);
+  const [input, setInput] = React.useState("");
+  React.useEffect(() => setInput(data.content), []);
+  const handleChange = (e) => {
+    setInput(() => e.target.value);
+  };
+  const handleDragStart = (e) => {
+    e.dataTransfer.setData("data", data.id);
+  };
+  const handleContentSave = () => {
+    dispatch({ type: Actions.EDIT_NOTE, data: input, id: data.id });
+  };
+  return (
+    <div draggable onDragStart={handleDragStart}>
+      {/* <div>choose color</div> */}
+      <textarea
+        rows="4"
+        cols="35"
+        type="text"
+        placeholder="New Note..."
+        value={input}
+        onChange={handleChange}
+        onBlur={handleContentSave}
+      />
+    </div>
+  );
+};
+
 const YourNotesList = () => {
-  return null;
+  const {
+    state: { notes },
+  } = React.useContext(RootContext);
+  return (
+    <DroppableArea
+      actionWhenDropped={Actions.UNPIN_NOTE}
+      className=" pt-4 pl-4 bg-red-600"
+    >
+      {notes.map((item) => (
+        <YourNote key={item.id} data={item} />
+      ))}
+    </DroppableArea>
+  );
+};
+
+// add color bar
+
+const YourNote = ({ data }) => {
+  const handleDragStart = (e) => {
+    e.dataTransfer.setData("data", data.id);
+  };
+  return (
+    !data.isInWorkspace && (
+      <div
+        draggable
+        onDragStart={handleDragStart}
+        className="h-12 bg-slate-400 text-ellipsis overflow-hidden w-48 mb-1"
+      >
+        {data.content.length ? data.content : "New Note"}
+      </div>
+    )
+  );
 };

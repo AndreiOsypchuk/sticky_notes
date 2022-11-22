@@ -5,5 +5,5 @@ export const Actions = {
   EDIT_NOTE: "EDIT_NOTE",
   DELETE_NOTE: "DELETE_NOTE",
   PIN_NOTE: "PIN_NOTE",
-  UNPIN_NOTE: "PIN_NOTE",
+  UNPIN_NOTE: "UNPIN_NOTE",
 };
