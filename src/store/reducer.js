@@ -18,19 +18,16 @@ export const rootReducer = (state = InitState, action) => {
         if (newState.notes[i].id === action.id)
           newState.notes[i].isInWorkspace = true;
       }
-      console.log(newState);
       return { ...state, notes: newState.notes };
     }
     // change isInWorkspace to false
 
     case Actions.UNPIN_NOTE: {
-      console.log("unpin");
       const newState = state;
       for (let i = 0; i < newState.notes.length; i++) {
         if (newState.notes[i].id === action.id)
           newState.notes[i].isInWorkspace = false;
       }
-      console.log(action.id, "unpinnted");
       return { ...state, notes: newState.notes };
     }
 
@@ -40,8 +37,10 @@ export const rootReducer = (state = InitState, action) => {
         if (newState.notes[i].id === action.id)
           newState.notes[i].content = action.data;
       }
-      console.log(action.id, "saved");
       return { ...state, notes: newState.notes };
+    }
+    case Actions.DELETE_NOTE: {
+      return { ...state, notes: state.notes.filter((n) => n.id !== action.id) };
     }
     default: {
       return state;

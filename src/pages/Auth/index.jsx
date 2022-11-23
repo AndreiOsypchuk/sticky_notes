@@ -21,7 +21,6 @@ export const Auth = () => {
   const [pageType, setPageType] = React.useState(AuthPageTypes.REGISTER);
   const { dispatch } = React.useContext(RootContext);
   const navigate = useNavigate();
-  React.useEffect(() => console.log(pageType), []);
 
   const switchType = (type) => {
     setPageType(() => type);
@@ -30,8 +29,7 @@ export const Auth = () => {
   const onSubmit = async (data) => {
     if (pageType === AuthPageTypes.REGISTER) {
       try {
-        const response = await Requester.post(AlphabetAPI.REGISTER_URL, data);
-        console.log(response.data);
+        await Requester.post(AlphabetAPI.REGISTER_URL, data);
         dispatch({ type: Actions.LOG_IN });
         navigate("/");
       } catch (e) {
@@ -39,8 +37,7 @@ export const Auth = () => {
       }
     } else if (pageType === AuthPageTypes.LOGIN) {
       try {
-        const response = await Requester.post(AlphabetAPI.LOGIN_URL, data);
-        console.log(response.data);
+        await Requester.post(AlphabetAPI.LOGIN_URL, data);
         dispatch({ type: Actions.LOG_IN });
         navigate("/");
       } catch (e) {

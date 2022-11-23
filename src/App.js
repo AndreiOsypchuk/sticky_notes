@@ -1,4 +1,4 @@
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { RequireAuth } from "./components/RequireAuth";
 import { Auth, Home } from "./pages";
 const App = () => {
