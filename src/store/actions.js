@@ -1,9 +1,0 @@
-export const Actions = {
-  LOG_IN: "LOG_IN",
-  LOG_OUT: "LOG_OUT",
-  CREATE_NOTE: "CREATE_NOTE",
-  EDIT_NOTE: "EDIT_NOTE",
-  DELETE_NOTE: "DELETE_NOTE",
-  PIN_NOTE: "PIN_NOTE",
-  UNPIN_NOTE: "UNPIN_NOTE",
-};
